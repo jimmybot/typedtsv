@@ -33,3 +33,10 @@ TODO:
 - Add a boolean type
 - Add a time type
 - Maybe: support array and map types for compatibility with Postgres
+
+## Developing
+```bash
+git clone git@github.com:jimmybot/typedtsv.git
+poetry install
+poetry shell
+pytest```
