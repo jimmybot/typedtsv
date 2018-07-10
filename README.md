@@ -16,7 +16,8 @@ Format is a normal TSV except the header rows uses a colon format to annotate th
 
 For example:
 
-```url:str    n_times:int   score:float
+```
+url:str    n_times:int   score:float
 https://www.example.com 5   1.6
 https://archive.org 99  9.9
 ```
@@ -39,4 +40,5 @@ TODO:
 git clone git@github.com:jimmybot/typedtsv.git
 poetry install
 poetry shell
-pytest```
+pytest
+```
