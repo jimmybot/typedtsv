@@ -1,5 +1,6 @@
 from collections import OrderedDict
 import json
+import re
 
 def loads(serialized_data):
     header_info = load_header(serialized_data.readline().strip())
@@ -58,11 +59,32 @@ def dump_line(header_info, row):
     return '\t'.join(raw_cols)
 
 def parse_str(raw_str):
-    return raw_str.replace('\\t', '\t').replace('\\n', '\n')
+    return SUB_DECODE_RE.sub(_sub_decode, raw_str)
 
 def dump_str(python_str):
-    return python_str.replace('\t', '\\t').replace('\n', '\\n')
-        
+    return SUB_ENCODE_RE.sub(_sub_encode, python_str)
+
+def _sub_encode(matchobj):
+    return SUB_ENCODE[matchobj.group(0)]
+
+def _sub_decode(matchobj):
+    return SUB_DECODE[matchobj.group(0)]
+
+SUB_ENCODE_RE = re.compile('\t|\n|\\\\')
+SUB_DECODE_RE = re.compile(r'\\t|\\n|\\\\')
+
+SUB_ENCODE = {
+    '\t': '\\t',
+    '\n': '\\n',
+    '\\': '\\\\',
+}
+
+SUB_DECODE = {
+    '\\\\': '\\',
+    '\\t': '\t',
+    '\\n': '\n',
+}
+
 COL_PARSERS = {
     'int': int,
     'float': float,

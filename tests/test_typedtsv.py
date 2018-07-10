@@ -56,7 +56,7 @@ def test_line_roundtrip():
     ))
     parsed_data = [
         99,
-        'green\t+\tblue\n=grue'
+        'green\t+\tblue\n=grue\\t\\n\\'
     ]
     assert parsed_data == load_line(header_info, dump_line(header_info, parsed_data))
 
@@ -104,6 +104,22 @@ def test_dump_roundtrip():
     ))
     data = [
         ['0', 'https://biglittlebear.cc', 55],
+    ]
+    outfile = io.StringIO()
+    dumps(header_info, data, outfile)
+    outfile.seek(0)
+    parsed_header_info, parsed_data = loads(outfile)
+    assert header_info == parsed_header_info
+    assert data == parsed_data
+
+def test_dump_roundtrip_slashn():
+    header_info = OrderedDict((
+        ('title', 'str'),
+        ('url', 'str'),
+        ('n_loads', 'int'),
+    ))
+    data = [
+        ['chit \n neng \t sah \\n', 'https://biglittlebear.cc', 55],
     ]
     outfile = io.StringIO()
     dumps(header_info, data, outfile)
