@@ -70,7 +70,7 @@ def _sub_encode(matchobj):
 def _sub_decode(matchobj):
     return SUB_DECODE[matchobj.group(0)]
 
-SUB_ENCODE_RE = re.compile('\t|\n|\\\\')
+SUB_ENCODE_RE = re.compile(r'\t|\n|\\')
 SUB_DECODE_RE = re.compile(r'\\t|\\n|\\\\')
 
 SUB_ENCODE = {

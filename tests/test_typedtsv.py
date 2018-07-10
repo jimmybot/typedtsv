@@ -56,7 +56,7 @@ def test_line_roundtrip():
     ))
     parsed_data = [
         99,
-        'green\t+\tblue\n=grue\\t\\n\\'
+        'green\t+\tblue\n=grue\\t\\n\\ \\\\'
     ]
     assert parsed_data == load_line(header_info, dump_line(header_info, parsed_data))
 
