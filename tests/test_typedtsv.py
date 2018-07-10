@@ -1,6 +1,11 @@
 import io
+import toml
 
-from typedcsv.typedcsv import *
+from typedtsv import __version__
+from typedtsv.typedtsv import *
+
+def test_version_in_sync():
+    assert toml.load('pyproject.toml')['tool']['poetry']['version'] == __version__
 
 def test_load_header():
     assert OrderedDict((
