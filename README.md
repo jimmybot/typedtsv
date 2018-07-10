@@ -36,8 +36,12 @@ TODO:
 - Maybe: support array and map types for compatibility with Postgres
 
 ## Developing
+
+Make sure you have Poetry installed: https://github.com/sdispater/poetry
+
 ```bash
 git clone git@github.com:jimmybot/typedtsv.git
+cd typedtsv
 poetry install
 poetry shell
 pytest
