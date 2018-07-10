@@ -1,0 +1,11 @@
+[tool.poetry]
+name = "typedcsv"
+version = "0.1.0"
+description = ""
+authors = ["James Lee <jimmybot@jimmybot.com>"]
+
+[tool.poetry.dependencies]
+python = "*"
+
+[tool.poetry.dev-dependencies]
+pytest = "^3.0"
