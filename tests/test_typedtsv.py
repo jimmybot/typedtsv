@@ -76,6 +76,34 @@ def test_loads():
         ['0', 'https://biglittlebear.cc', 55],
     ] == rows
 
+def test_load_bool_true():
+    raw_data = io.StringIO()
+    raw_data.write('title:str\tfetched:bool\n')
+    raw_data.write('0\ttrue\n')
+    raw_data.write('1\tt\n')
+    raw_data.write('2\tyes\n')
+    raw_data.write('3\ty\n')
+    raw_data.write('4\ton\n')
+    raw_data.write('5\t1\n')
+    raw_data.seek(0)
+    header_info, rows = loads(raw_data)
+    for row in rows:
+        assert True == row[1]
+
+def test_load_bool_false():
+    raw_data = io.StringIO()
+    raw_data.write('title:str\tfetched:bool\n')
+    raw_data.write('0\tfalse\n')
+    raw_data.write('1\tf\n')
+    raw_data.write('2\tno\n')
+    raw_data.write('3\tn\n')
+    raw_data.write('4\toff\n')
+    raw_data.write('5\t0\n')
+    raw_data.seek(0)
+    header_info, rows = loads(raw_data)
+    for row in rows:
+        assert False == row[1]
+
 def test_dumps():
     header_info = OrderedDict((
         ('title', 'str'),
@@ -101,9 +129,11 @@ def test_dump_roundtrip():
         ('title', 'str'),
         ('url', 'str'),
         ('n_loads', 'int'),
+        ('in_cache', 'bool'),
     ))
     data = [
-        ['0', 'https://biglittlebear.cc', 55],
+        ['0', 'https://biglittlebear.cc', 55, True],
+        ['1', 'https://archive.org', 99, False],
     ]
     outfile = io.StringIO()
     dumps(header_info, data, outfile)

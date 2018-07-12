@@ -1,4 +1,5 @@
 from collections import OrderedDict
+import distutils.util
 import json
 import re
 
@@ -6,8 +7,12 @@ def loads(serialized_data):
     header_info = load_header(serialized_data.readline().strip())
     rows = []
     for line in serialized_data:
-        row = load_line(header_info, line)
-        rows.append(row)
+        # remove trailing newline, artifact of text file reading
+        line = line.rstrip('\n')
+        # only process non-empty rows; empty rows are not considered data
+        if line:
+            row = load_line(header_info, line)
+            rows.append(row)
     return header_info, rows
 
 def load_header(line):
@@ -90,11 +95,13 @@ COL_PARSERS = {
     'float': float,
     'str': parse_str,
     'json': json.loads,
+    'bool': lambda s: bool(distutils.util.strtobool(s)),
 }
 
 COL_SERIALIZERS = {
     'int': str,
     'float': str,
     'str': dump_str,
-    'json': json.dumps
+    'json': json.dumps,
+    'bool': lambda b: 'true' if b else 'false',
 }
