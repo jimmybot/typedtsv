@@ -42,12 +42,14 @@ Initial pass centered around Python's basic types plus JSON.  Current valid type
 - str       # Newlines, tabs, and backward slash must be escaped
 - json
 
-Row separators use '\n' only.  Windows line breaks, '\r\n' are not valid.
-Gotcha: In Python, you need to be careful about opening files that may contain Windows newlines:
+Row separators use `'\n'` only.  Windows line breaks, `'\r\n'` are not valid.
+
+**Gotcha**: In Python, you need to be careful about opening files that may contain Windows newlines:
 ```py
-infile = open('data.ttsv', 'r', newline='\n')   # default for newline is '\n' or '\r' or '\r\n'
+infile = open('data.ttsv', 'r', newline='\n')   # must set newline='\n' because default for newline is '\n' or '\r' or '\r\n'
 ```
 
+We'll never allow quoted `'\n'` because this would make the file difficult to chunk and thus make it difficult to parallelize reading.
 ## TODO:
 - ~~Add a boolean type~~
 - Add a time type
