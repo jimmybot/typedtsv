@@ -157,3 +157,21 @@ def test_dump_roundtrip_slashn():
     parsed_header_info, parsed_data = loads(outfile)
     assert header_info == parsed_header_info
     assert data == parsed_data
+
+def test_dump_roundtrip_windowsnewline():
+    header_info = OrderedDict((
+        ('title', 'str'),
+        ('url', 'str'),
+        ('n_loads', 'int'),
+    ))
+    data = [
+        ['chit \r\n \n neng \t sah \\n', 'https://biglittlebear.cc', 55],
+    ]
+    # regular files need to be opened with newline='\n'
+    # io.StringIO has a good default to only recognize '\n'
+    outfile = io.StringIO(newline='\n')
+    dumps(header_info, data, outfile)
+    outfile.seek(0)
+    parsed_header_info, parsed_data = loads(outfile)
+    assert header_info == parsed_header_info
+    assert data == parsed_data

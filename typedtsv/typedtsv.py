@@ -41,6 +41,14 @@ def load_line(header_info, line, as_dict=False):
     return cols
 
 def dumps(header_info, data, outfile):
+    """Serialize a list of rows to a typed tsv file
+
+    header_info may be either a tuple/list of column names and the types will be inferred from the data
+    or it may be a full OrderedDictionary whose keys are the column names and values are the column types
+    """
+    if type(header_info) in (list, tuple):
+        header_info = header_info_types_from_row(header_info, data[0])
+
     raw_header = dump_header(header_info)
     outfile.write(raw_header)
     outfile.write('\n')
@@ -48,6 +56,14 @@ def dumps(header_info, data, outfile):
         raw_row = dump_line(header_info, row)
         outfile.write(raw_row)
         outfile.write('\n')
+
+def header_info_types_from_row(names, row):
+    header_info = OrderedDict()
+    default_type = PYTHON2TYPEDTSV['_']
+    for name, col in zip(names, row):
+        header_info[name] = PYTHON2TYPEDTSV.get(type(col), default_type)
+
+    return header_info
 
 def dump_header(header_info):
     cols = []
@@ -88,6 +104,15 @@ SUB_DECODE = {
     '\\\\': '\\',
     '\\t': '\t',
     '\\n': '\n',
+}
+
+# json is fallback serialization method for anything else
+PYTHON2TYPEDTSV = {
+    int: 'int',
+    float: 'float',
+    str: 'str',
+    bool: 'bool',
+    '_': 'json'
 }
 
 COL_PARSERS = {

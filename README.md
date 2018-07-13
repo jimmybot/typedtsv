@@ -15,6 +15,7 @@ Newline-delimited JSON is convenient with little chance of making mistakes in pa
 ## Goals
 - Be simple
 - Be fast
+- Be easily parallelized
 - Be a better alternative to CSV/TSV/JSON and simple uses of YAML
 
 ## Non-Goals
@@ -40,6 +41,12 @@ Initial pass centered around Python's basic types plus JSON.  Current valid type
 - bool      # Valid values: true, false, t, f, yes, no, y, n, 1, 0
 - str       # Newlines, tabs, and backward slash must be escaped
 - json
+
+Row separators use '\n' only.  Windows line breaks, '\r\n' are not valid.
+Gotcha: In Python, you need to be careful about opening files that may contain Windows newlines:
+```py
+infile = open('data.ttsv', 'r', newline='\n')   # default for newline is '\n' or '\r' or '\r\n'
+```
 
 ## TODO:
 - ~~Add a boolean type~~
