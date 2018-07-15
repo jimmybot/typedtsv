@@ -4,13 +4,13 @@ Typed TSV: A simple format for typing TSVs with an implementation in Python 3.
 ## Why?
 JSON, YAML, TOML and other simple formats aren't built for list/table like sets of data.
 
-YAML is particularly slow due to its expansive featureset and JSON, being that is for single objects and not collections, is not chunkable.  TOML is particularly targeted towards configuration files and similarly parses results in a single dictionary object.
+YAML is particularly slow due to its expansive featureset and JSON, being that is for single objects and not collections, is not chunkable.  I once stored all PyPI package info in a YAML file and reading it back out was going to take half a day.  Using a dead-simple newline-delimited JSON format made parsing take seconds.
 
-I once stored all PyPI package info in a YAML file and reading it back out was going to take half a day.  Using a dead-simple newline-delimited JSON format made parsing take seconds.
+Newline-delimited JSON is convenient with little chance of making mistakes in parsing and good performance.  The downsides are the types supported are a bit too limited (no int vs float), and it is also not easily human readable or editable.
 
-CSV/TSV formats have too much ambiguity resulting in repetitive custom parsing logic contained outside the file itself.
+TOML is particularly targeted towards configuration files and similarly parses results in a single dictionary object rather than a collection.
 
-Newline-delimited JSON is convenient with little chance of making mistakes in parsing and good performance.  The downsides are types supported are a bit too limited (no int vs float), and it is also not easily human readable or editable.
+CSV/TSV formats have too much ambiguity resulting in repetitive custom parsing logic contained outside the file itself.  CSV quote escaping can also lead to poor parsing performance.
 
 ## Goals
 - Be simple
@@ -36,13 +36,13 @@ https://archive.org 99  9.9
 ```
 
 Initial pass centered around Python's basic types plus JSON.  Current valid types are:
-- int
-- float
-- bool      # Valid values: true, false, t, f, yes, no, y, n, 1, 0
-- str       # Newlines, tabs, and backward slash must be escaped
-- json
-
-- null      # Supported for all values as 'null'.  To get literal string null, use '\\null'
+| int    |
+| float  |
+| bool   | Valid values: true, false, t, f, yes, no, y, n, 1, 0
+| str    | Newlines, tabs, and backward slash must be escaped
+| json   |
+|        |
+| null   | All types are nullable with value 'null'.  To get literal string null, use '\\null'
 
 Row separators use `'\n'` only.  Windows line breaks, `'\r\n'` are not valid.
 
