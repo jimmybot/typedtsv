@@ -36,13 +36,16 @@ https://archive.org 99  9.9
 ```
 
 Initial pass centered around Python's basic types plus JSON.  Current valid types are:
-| int    |
-| float  |
-| bool   | Valid values: true, false, t, f, yes, no, y, n, 1, 0
-| str    | Newlines, tabs, and backward slash must be escaped
-| json   |
-|        |
-| null   | All types are nullable with value 'null'.  To get literal string null, use '\\null'
+
+| Type   | Notes                                               |
+|--------|------------------------------------------------------
+| int    |                                                     |
+| float  |                                                     |
+| bool   | Valid values: true, false, t, f, yes, no, y, n, 1, 0|
+| str    | Newlines, tabs, and backward slash must be escaped  |
+| json   |                                                     |
+|        |                                                     |
+| null   | All types are nullable with value 'null'.  To get literal string null, use '\\null'|
 
 Row separators use `'\n'` only.  Windows line breaks, `'\r\n'` are not valid.
 
