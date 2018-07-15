@@ -42,6 +42,8 @@ Initial pass centered around Python's basic types plus JSON.  Current valid type
 - str       # Newlines, tabs, and backward slash must be escaped
 - json
 
+- null      # Supported for all values as 'null'.  To get literal string null, use '\\null'
+
 Row separators use `'\n'` only.  Windows line breaks, `'\r\n'` are not valid.
 
 **Gotcha**: In Python, you need to be careful about opening files that may contain Windows newlines:
@@ -52,6 +54,7 @@ infile = open('data.ttsv', 'r', newline='\n')   # must set newline='\n' because 
 We'll never allow quoted `'\n'` because this would make the file difficult to chunk and thus make it difficult to parallelize reading.
 ## TODO:
 - ~~Add a boolean type~~
+- ~~Add nulls~~
 - Add a time type
 - Maybe: support array and map types for compatibility with Postgres
 

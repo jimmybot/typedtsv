@@ -32,7 +32,10 @@ def load_line(header_info, line, as_dict=False):
     ordered_keys = tuple(header_info.keys())
 
     for i, val in enumerate(line.split('\t')):
-        parsed_value = COL_PARSERS[header_info[ordered_keys[i]]](val)
+        if val == 'null':
+            parsed_value = None
+        else:
+            parsed_value = COL_PARSERS[header_info[ordered_keys[i]]](val)
         if as_dict:
             cols[header_info] = parsed_value
         else:
@@ -66,7 +69,7 @@ def header_info_types_from_row(names, row):
     return header_info
 
 def dump_header(header_info):
-    cols = []
+    cols = [] 
     for col_name, col_type in header_info.items():
         cols.append('%s:%s' % (col_name, col_type))
     return '\t'.join(cols)
@@ -75,15 +78,26 @@ def dump_line(header_info, row):
     ordered_keys = tuple(header_info.keys())
     raw_cols = []
     for i, col in enumerate(row):
-        raw_col = COL_SERIALIZERS[header_info[ordered_keys[i]]](col)
+        if col == None:
+            raw_col = 'null'
+        else:
+            raw_col = COL_SERIALIZERS[header_info[ordered_keys[i]]](col)
         raw_cols.append(raw_col)
     return '\t'.join(raw_cols)
 
 def parse_str(raw_str):
-    return SUB_DECODE_RE.sub(_sub_decode, raw_str)
+    if raw_str == 'null':
+        return None
+    elif raw_str == '\\null':
+        return 'null'
+    else:
+        return SUB_DECODE_RE.sub(_sub_decode, raw_str)
 
 def dump_str(python_str):
-    return SUB_ENCODE_RE.sub(_sub_encode, python_str)
+    if python_str == 'null':
+        return '\\null'
+    else:
+        return SUB_ENCODE_RE.sub(_sub_encode, python_str)
 
 def _sub_encode(matchobj):
     return SUB_ENCODE[matchobj.group(0)]
