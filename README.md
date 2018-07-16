@@ -17,6 +17,12 @@ CSV/TSV formats have too much ambiguity resulting in repetitive custom parsing l
 - Be fast
 - Be easily parallelized
 - Be a better alternative to CSV/TSV/JSON and simple uses of YAML
+- Push information about a dataset into the data file itself for future reproducibility
+
+### Use Cases in Mind
+- Database-agnostic, program-agnostic simple file format for open data
+- A go-to serialization format for quick, but reproducible data science work
+- Easily-created, easily-editable, easily-understood database fixtures for tests
 
 ## Non-Goals
 - Unlimited extensibility a la YAML
@@ -58,7 +64,8 @@ We'll never allow quoted `'\n'` because this would make the file difficult to ch
 ## TODO:
 - ~~Add a boolean type~~
 - ~~Add nulls~~
-- Add a time type
+- Add a datetime/date/time type: need to avoid ambiguity yet support common uses
+- Maybe: extend format to support column comments / unit annotation / other common metadata
 - Maybe: support array and map types for compatibility with Postgres
 
 ## Developing
