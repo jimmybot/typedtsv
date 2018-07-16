@@ -21,7 +21,7 @@ CSV/TSV formats have too much ambiguity resulting in repetitive custom parsing l
 
 ### Use Cases in Mind
 - Database-agnostic, program-agnostic simple file format for open data
-- A go-to serialization format for quick, but reproducible data science work
+- A quick go-to serialization format for sharing reproducible data science datasets
 - Easily-created, easily-editable, easily-understood database fixtures for tests
 
 ## Non-Goals
