@@ -35,7 +35,7 @@ def test_parse_datetime():
         (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=1))), '2000-01-01 00:00:00+01'),
         (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=-3, minutes=-30))), '2000-01-01 00:00:00-0330'),
         (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=-3, minutes=-30))), '2000-01-01 00:00:00-03:30'),
-        (datetime(2000, 1, 1, 0, 0, 0, 123, timezone(timedelta(hours=-3, minutes=-30))), '2000-01-01 00:00:00.123-03:30'),
+        (datetime(2000, 1, 1, 0, 0, 0, 123000, timezone(timedelta(hours=-3, minutes=-30))), '2000-01-01 00:00:00.123-03:30'),
         (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=-3, minutes=-30))), '2000-01-01 00:00:00 -03:30'),
         (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=-3, minutes=-30))), '2000-01-01 -03:30'),
         (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=0))), '2000-01-01Z'),
@@ -228,4 +228,24 @@ def test_dump_roundtrip_null():
     outfile.seek(0)
     parsed_header_info, parsed_data = loads(outfile)
     assert header_info == parsed_header_info
+    assert data == parsed_data
+
+def test_dump_roundtrip_datetime():
+    col_names = ['updated']
+    data = [
+        [datetime(1999, 9, 9, tzinfo=timezone.utc)],
+        [datetime(1999, 9, 9, 0, 0, 0, tzinfo=timezone.utc)],
+        [datetime(1999, 9, 9, 8, 3, 7, tzinfo=timezone.utc)],
+        [datetime(1999, 9, 9, 8, 3, 7, tzinfo=timezone(timedelta(hours=-6)))],
+        [datetime(1999, 9, 9, 8, 3, 7, 323000, tzinfo=timezone(timedelta(hours=-6)))],
+    ]
+    # regular files need to be opened with newline='\n'
+    # io.StringIO has a good default to only recognize '\n'
+    outfile = io.StringIO(newline='\n')
+    dumps(col_names, data, outfile)
+    outfile.seek(0)
+    parsed_header_info, parsed_data = loads(outfile)
+    assert OrderedDict((
+        ('updated', 'datetime'),
+    )) == parsed_header_info
     assert data == parsed_data

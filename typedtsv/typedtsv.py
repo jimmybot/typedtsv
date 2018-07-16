@@ -147,7 +147,7 @@ def parse_datetime(raw_datetime):
         int(m['hour']) if m['hour'] else 0,
         int(m['minute']) if m['minute'] else 0,
         int(m['seconds']) if m['seconds'] else 0,
-        int(m['milliseconds']) if m['milliseconds'] else 0,
+        int(m['milliseconds'])*1000 if m['milliseconds'] else 0,
         tz
     )
 
@@ -170,6 +170,7 @@ PYTHON2TYPEDTSV = {
     float: 'float',
     str: 'str',
     bool: 'bool',
+    datetime: 'datetime',
     '_': 'json'
 }
 
@@ -179,6 +180,7 @@ COL_PARSERS = {
     'str': parse_str,
     'json': json.loads,
     'bool': lambda s: bool(distutils.util.strtobool(s)),
+    'datetime': parse_datetime,
 }
 
 COL_SERIALIZERS = {
@@ -187,4 +189,5 @@ COL_SERIALIZERS = {
     'str': dump_str,
     'json': json.dumps,
     'bool': lambda b: 'true' if b else 'false',
+    'datetime': dump_datetime,
 }
