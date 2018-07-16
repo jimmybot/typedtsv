@@ -1,3 +1,6 @@
+from collections import OrderedDict
+from datetime import datetime, timezone, timedelta
+
 import io
 import toml
 
@@ -24,6 +27,36 @@ def test_load_line():
         "大驚小怪",
         "5",
     ] == load_line(header_info, line)
+
+def test_parse_datetime():
+    datetimes_from_strs = (
+        (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=0))), '2000-01-01 00:00:00Z'),
+        (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=0))), '2000-01-01T00:00:00Z'),
+        (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=1))), '2000-01-01 00:00:00+01'),
+        (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=-3, minutes=-30))), '2000-01-01 00:00:00-0330'),
+        (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=-3, minutes=-30))), '2000-01-01 00:00:00-03:30'),
+        (datetime(2000, 1, 1, 0, 0, 0, 123, timezone(timedelta(hours=-3, minutes=-30))), '2000-01-01 00:00:00.123-03:30'),
+        (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=-3, minutes=-30))), '2000-01-01 00:00:00 -03:30'),
+        (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=-3, minutes=-30))), '2000-01-01 -03:30'),
+        (datetime(2000, 1, 1, 0, 0, 0, 0, timezone(timedelta(hours=0))), '2000-01-01Z'),
+    )
+
+    for expected, raw_string in datetimes_from_strs:
+        assert expected == parse_datetime(raw_string)
+
+def test_dump_datetime():
+    strs_from_datetime = (
+        ('2000-01-01 00:00', datetime(2000, 1, 1)),
+        ('2000-01-01 00:00', datetime(2000, 1, 1, 0, 0, 0)),
+        ('2000-01-01 00:00', datetime(2000, 1, 1, 0, 0, 0, tzinfo=timezone.utc)),
+        ('2000-01-01 00:00:59', datetime(2000, 1, 1, 0, 0, 59, tzinfo=timezone.utc)),
+        ('2000-01-01 00:00:35.123', datetime(2000, 1, 1, 0, 0, 35, 123000, tzinfo=timezone.utc)),
+        ('2000-01-01 08:00:09-0600', datetime(2000, 1, 1, 8, 0, 9, tzinfo=timezone(timedelta(hours=-6)))),
+        ('2000-01-01 08:00-0600', datetime(2000, 1, 1, 8, 0, 0, tzinfo=timezone(timedelta(hours=-6)))),
+    )
+
+    for expected, dt in strs_from_datetime:
+        assert expected == dump_datetime(dt)
 
 def test_dump_header():
     header_info = OrderedDict((

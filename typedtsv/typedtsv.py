@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from datetime import datetime, timedelta, timezone
 import distutils.util
 import json
 import re
@@ -86,9 +87,7 @@ def dump_line(header_info, row):
     return '\t'.join(raw_cols)
 
 def parse_str(raw_str):
-    if raw_str == 'null':
-        return None
-    elif raw_str == '\\null':
+    if raw_str == '\\null':
         return 'null'
     else:
         return SUB_DECODE_RE.sub(_sub_decode, raw_str)
@@ -98,12 +97,6 @@ def dump_str(python_str):
         return '\\null'
     else:
         return SUB_ENCODE_RE.sub(_sub_encode, python_str)
-
-def _sub_encode(matchobj):
-    return SUB_ENCODE[matchobj.group(0)]
-
-def _sub_decode(matchobj):
-    return SUB_DECODE[matchobj.group(0)]
 
 SUB_ENCODE_RE = re.compile(r'\t|\n|\\')
 SUB_DECODE_RE = re.compile(r'\\t|\\n|\\\\')
@@ -119,6 +112,57 @@ SUB_DECODE = {
     '\\t': '\t',
     '\\n': '\n',
 }
+
+def _sub_encode(matchobj):
+    return SUB_ENCODE[matchobj.group(0)]
+
+def _sub_decode(matchobj):
+    return SUB_DECODE[matchobj.group(0)]
+
+
+# date and time separator can be either 'T' or ' '
+# time will be assumed to be 00:00:00.000 if not specified
+# when time is specified, seconds and milliseconds are optional (and will be assumed to be 00.000)
+# utc will be assumed if timezone not specified
+DATETIME_RE = re.compile(
+    r'''(?P<year>\d{1,4})-(?P<month>\d{1,2})-(?P<day>\d{1,2})'''
+    r'''(?P<time>[ T]?(?P<hour>\d{2}):(?P<minute>\d\d)(:(?P<seconds>\d\d)([.](?P<milliseconds>\d\d\d))?)?)?'''
+    r'''([ ]?(?P<timezone>Z|(?P<tz_sign>[+-])(?P<tz_hours>\d\d)(:?(?P<tz_minutes>\d\d))?))?'''
+)
+
+def parse_datetime(raw_datetime):
+    m = DATETIME_RE.match(raw_datetime).groupdict()
+    if m['timezone'] == None or m['timezone'] == 'Z':
+        tz = timezone.utc
+    else:
+        tz_sign = m['tz_sign']
+        tz_hours = int(tz_sign + m['tz_hours'])
+        tz_minutes = int(tz_sign + m['tz_minutes']) if m['tz_minutes'] else 0
+        tz = timezone(timedelta(hours=tz_hours, minutes=tz_minutes))
+
+    return datetime(
+        int(m['year']),
+        int(m['month']),
+        int(m['day']),
+        int(m['hour']) if m['hour'] else 0,
+        int(m['minute']) if m['minute'] else 0,
+        int(m['seconds']) if m['seconds'] else 0,
+        int(m['milliseconds']) if m['milliseconds'] else 0,
+        tz
+    )
+
+# standard output format will always display specificity up to seconds
+# seconds and milliseconds will be displayed only if not 0
+# timezone will only be displayed if not UTC
+def dump_datetime(dt):
+    dt_str = dt.strftime('%Y-%m-%d %H:%M')
+    if dt.second != 0:
+        dt_str += dt.strftime(':%S')
+    if dt.microsecond != 0:
+        dt_str += '.%d' % round(dt.microsecond/1000.0)
+    if dt.tzinfo and dt.tzinfo != timezone.utc:
+        dt_str += dt.strftime('%z')
+    return dt_str
 
 # json is fallback serialization method for anything else
 PYTHON2TYPEDTSV = {
