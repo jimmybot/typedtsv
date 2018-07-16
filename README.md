@@ -43,15 +43,16 @@ https://archive.org 99  9.9
 
 Initial pass centered around Python's basic types plus JSON.  Current valid types are:
 
-| Type   | Notes                                               |
-|--------|------------------------------------------------------
-| int    |                                                     |
-| float  |                                                     |
-| bool   | Valid values: true, false, t, f, yes, no, y, n, 1, 0|
-| str    | Newlines, tabs, and backward slash must be escaped  |
-| json   |                                                     |
-|        |                                                     |
-| null   | All types are nullable with value 'null'.  To get literal string null, use '\\null'|
+| Type     | Notes                                               |
+|----------|------------------------------------------------------
+| int      |                                                     |
+| float    |                                                     |
+| bool     | Valid values: true, false, t, f, yes, no, y, n, 1, 0|
+| str      | Newlines, tabs, and backward slash must be escaped  |
+| datetime | '2011-01-01 00:00:00' Without timezone assumes UTC  |
+| json     |                                                     |
+|          |                                                     |
+| null     | All types are nullable with value 'null'.  To get literal string null, use '\\null'|
 
 Row separators use `'\n'` only.  Windows line breaks, `'\r\n'` are not valid.
 
@@ -64,9 +65,10 @@ We'll never allow quoted `'\n'` because this would make the file difficult to ch
 ## TODO:
 - ~~Add a boolean type~~
 - ~~Add nulls~~
-- Add a datetime/date/time type: need to avoid ambiguity yet support common uses
+- ~~Add a datetime/date/time type: need to avoid ambiguity yet support common uses~~
 - Maybe: extend format to support column comments / unit annotation / other common metadata
 - Maybe: support array and map types for compatibility with Postgres
+- Maybe: Support date, time, and/or timeinterval types
 
 ## Developing
 
