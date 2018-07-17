@@ -105,7 +105,7 @@ def dump_str(python_str):
         return SUB_ENCODE_RE.sub(_sub_encode, python_str)
 
 SUB_ENCODE_RE = re.compile(r'\t|\n|\\|#')
-SUB_DECODE_RE = re.compile(r'\\t|\\n|\\\\|\\#')
+SUB_DECODE_RE = re.compile(r'\\t|\\n|\\#|\\\\')
 
 SUB_ENCODE = {
     '\t': '\\t',
