@@ -95,8 +95,12 @@ def test_line_roundtrip():
 
 def test_loads():
     raw_data = io.StringIO()
+    raw_data.write('# 1 comment line should be ignored\n')
     raw_data.write('title:str\turl:str\tn_loads:int\n')
+    raw_data.write('# 2 comment line should be ignored\n')
     raw_data.write('0\thttps://biglittlebear.cc\t55\n')
+    raw_data.write('# 3 comment line should be ignored\n')
+    raw_data.write('\\#\t\\\\#\t99\n')
     raw_data.seek(0)
     header_info, rows = loads(raw_data)
     assert OrderedDict((
@@ -107,6 +111,7 @@ def test_loads():
 
     assert [
         ['0', 'https://biglittlebear.cc', 55],
+        ['#', '\\#', 99],
     ] == rows
 
 def test_load_bool_true():

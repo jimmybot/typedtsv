@@ -5,13 +5,19 @@ import json
 import re
 
 def loads(serialized_data):
-    header_info = load_header(serialized_data.readline().strip())
+    line = serialized_data.readline().rstrip('\n')
+
+    # throw away comment lines before the header line
+    while line.startswith('#'):
+        line = serialized_data.readline().rstrip('\n')
+
+    header_info = load_header(line)
     rows = []
     for line in serialized_data:
         # remove trailing newline, artifact of text file reading
         line = line.rstrip('\n')
         # only process non-empty rows; empty rows are not considered data
-        if line:
+        if line and not line.startswith('#'):
             row = load_line(header_info, line)
             rows.append(row)
     return header_info, rows
@@ -98,19 +104,21 @@ def dump_str(python_str):
     else:
         return SUB_ENCODE_RE.sub(_sub_encode, python_str)
 
-SUB_ENCODE_RE = re.compile(r'\t|\n|\\')
-SUB_DECODE_RE = re.compile(r'\\t|\\n|\\\\')
+SUB_ENCODE_RE = re.compile(r'\t|\n|\\|#')
+SUB_DECODE_RE = re.compile(r'\\t|\\n|\\\\|\\#')
 
 SUB_ENCODE = {
     '\t': '\\t',
     '\n': '\\n',
     '\\': '\\\\',
+    '#': '\\#',
 }
 
 SUB_DECODE = {
     '\\\\': '\\',
     '\\t': '\t',
     '\\n': '\n',
+    '\\#': '#',
 }
 
 def _sub_encode(matchobj):

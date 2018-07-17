@@ -36,6 +36,7 @@ Format is a normal TSV except the header rows uses a colon format to annotate th
 For example:
 
 ```
+# I'm a comment and will be ignored
 url:str    n_times:int   score:float
 https://www.example.com 5   1.6
 https://archive.org 99  9.9
@@ -48,11 +49,13 @@ Initial pass centered around Python's basic types plus JSON.  Current valid type
 | int      |                                                     |
 | float    |                                                     |
 | bool     | Valid values: true, false, t, f, yes, no, y, n, 1, 0|
-| str      | Newlines, tabs, and backward slash must be escaped  |
+| str      | Newlines, tabs, \, and #  must be escaped           |
 | datetime | '2011-01-01 00:00:00' Without timezone assumes UTC  |
 | json     |                                                     |
 |          |                                                     |
-| null     | All types are nullable with value 'null'.  To get literal string null, use '\\null'|
+| null     | All types are nullable with value 'null'.  To get literal string 'null', use '\\null'|
+
+Comments are supported, just prefix with #.  Escape actual # in a string with a single backslash '\\#'.
 
 Row separators use `'\n'` only.  Windows line breaks, `'\r\n'` are not valid.
 
