@@ -49,7 +49,7 @@ Initial pass centered around Python's basic types plus JSON.  Current valid type
 | int      |                                                     |
 | float    |                                                     |
 | bool     | Valid values: true, false, t, f, yes, no, y, n, 1, 0|
-| str      | Newlines, tabs, \, and #  must be escaped           |
+| str      | Newlines, tabs, \\, and #  must be escaped           |
 | datetime | '2011-01-01 00:00:00' Without timezone assumes UTC  |
 | json     |                                                     |
 |          |                                                     |
@@ -59,12 +59,15 @@ Comments are supported, just prefix with #.  Escape actual # in a string with a 
 
 Row separators use `'\n'` only.  Windows line breaks, `'\r\n'` are not valid.
 
-**Gotcha**: In Python, you need to be careful about opening files that may contain Windows newlines:
+We'll never allow quoted `'\n'` because this would make the file difficult to chunk and thus make it difficult to parallelize reading.
+
+**Gotchas**:
+- In Python, you need to be careful about opening files that may contain Windows newlines:
 ```py
 infile = open('data.ttsv', 'r', newline='\n')   # must set newline='\n' because default for newline is '\n' or '\r' or '\r\n'
 ```
+- typedtsv.dumps can infer column types from the first row of your data but not if there are any ```null```'s.  In that case, use the regular OrderedDict method to define column names and types
 
-We'll never allow quoted `'\n'` because this would make the file difficult to chunk and thus make it difficult to parallelize reading.
 ## TODO:
 - ~~Add a boolean type~~
 - ~~Add nulls~~
