@@ -1,5 +1,5 @@
-__version__ = '0.6.0'
+__version__ = '0.9.0'
 
-from typedtsv.typedtsv import dumps, loads
+from typedtsv.typedtsv import dumps, loads, dump_list, load_list
 
-__all__ = ['dumps', 'loads']
+__all__ = ['dumps', 'loads', 'dump_list', 'load_list']

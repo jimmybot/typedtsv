@@ -114,6 +114,27 @@ def test_loads():
         ['#', '\\#', 99],
     ] == rows
 
+def test_load_list():
+    raw_data = io.StringIO()
+    raw_data.write('# 1 comment line should be ignored\n')
+    raw_data.write('title:str\n')
+    raw_data.write('# 2 comment line should be ignored\n')
+    raw_data.write('https://biglittlebear.cc\n')
+    raw_data.write('https://jimmybot.com\n')
+    raw_data.write('# 3 comment line should be ignored\n')
+    raw_data.write('\\#\n')
+    raw_data.seek(0)
+    header_info, rows = load_list(raw_data)
+    assert OrderedDict((
+        ('title', 'str'),
+    )) == header_info
+
+    assert [
+        'https://biglittlebear.cc',
+        'https://jimmybot.com',
+        '#',
+    ] == rows
+
 def test_load_bool_true():
     raw_data = io.StringIO()
     raw_data.write('title:str\tfetched:bool\n')
@@ -158,6 +179,23 @@ def test_dumps():
     raw_data_expected = (
         'title:str\turl:str\tn_loads:int\n'
         '0\thttps://biglittlebear.cc\t55\n'
+    )
+
+    assert raw_data_expected == raw_data_dumped
+
+def test_dump_list():
+    data = [
+        'https://biglittlebear.cc',
+        'https://jimmybot.com',
+    ]
+    outfile = io.StringIO()
+    dump_list(('title', 'str'), data, outfile)
+    outfile.seek(0)
+    raw_data_dumped = outfile.read()
+    raw_data_expected = (
+        'title:str\n'
+        'https://biglittlebear.cc\n'
+        'https://jimmybot.com\n'
     )
 
     assert raw_data_expected == raw_data_dumped

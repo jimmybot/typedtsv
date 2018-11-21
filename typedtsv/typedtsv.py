@@ -22,6 +22,25 @@ def loads(serialized_data):
             rows.append(row)
     return header_info, rows
 
+def load_list(serialized_data):
+    '''Convenience method for loading a single column file into a list (rather than list of lists)'''
+    line = serialized_data.readline().rstrip('\n')
+
+    # throw away comment lines before the header line
+    while line.startswith('#'):
+        line = serialized_data.readline().rstrip('\n')
+
+    header_info = load_header(line)
+    rows = []
+    for line in serialized_data:
+        # remove trailing newline, artifact of text file reading
+        line = line.rstrip('\n')
+        # only process non-empty rows; empty rows are not considered data
+        if line and not line.startswith('#'):
+            row = load_line(header_info, line)
+            rows.append(row[0])
+    return header_info, rows
+
 def load_header(line):
     header_info = OrderedDict()
     for column in line.split('\t'):
@@ -64,6 +83,26 @@ def dumps(header_info, data, outfile):
     outfile.write('\n')
     for row in data:
         raw_row = dump_line(header_info, row)
+        outfile.write(raw_row)
+        outfile.write('\n')
+
+def dump_list(header_info, data, outfile):
+    """Serialize a list representing a single column to a typed tsv file
+
+    header_info may be either a column name and the type will be inferred from the data
+    or it may be a tuple pair whose first element is the column names and second element
+    is the column type
+    """
+    if type(header_info) == str:
+        header_info = header_info_types_from_row((header_info,), [data[0]])
+    else:
+        header_info = OrderedDict((header_info,))
+
+    raw_header = dump_header(header_info)
+    outfile.write(raw_header)
+    outfile.write('\n')
+    for value in data:
+        raw_row = dump_line(header_info, (value,))
         outfile.write(raw_row)
         outfile.write('\n')
 

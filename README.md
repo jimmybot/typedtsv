@@ -1,6 +1,10 @@
 # typedtsv
 Typed TSV: A simple format for typing TSVs with an implementation in Python 3.
 
+Available on pypi: https://pypi.org/project/typedtsv/
+
+Install with: `pip install typedtsv`
+
 ## Why?
 JSON, YAML, TOML and other simple formats aren't built for list/table like sets of data.
 
@@ -72,6 +76,7 @@ infile = open('data.ttsv', 'r', newline='\n')   # must set newline='\n' because 
 - ~~Add a boolean type~~
 - ~~Add nulls~~
 - ~~Add a datetime/date/time type: need to avoid ambiguity yet support common uses~~
+- ~~Ergonomics: optionally read and dump single lists of data rather than dealing with a list of lists~~
 - Support units annotations such as degrees F, meters/second using similar using same syntax as F#: https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/units-of-measure
 - Maybe: extend format to support column comments / other common metadata
 - Maybe: support array and map types for compatibility with Postgres
