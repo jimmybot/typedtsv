@@ -5,6 +5,8 @@ Available on pypi: https://pypi.org/project/typedtsv/
 
 Install with: `pip install typedtsv`
 
+See code and leave feedback here: https://github.com/jimmybot/typedtsv
+
 ## Why?
 JSON, YAML, TOML and other simple formats aren't built for list/table like sets of data.
 

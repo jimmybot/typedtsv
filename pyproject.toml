@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "typedtsv"
-version = "0.9.0"
+version = "0.9.1"
 description = "A simple format for typing TSVs with an implementation in Python 3"
 authors = ["jimmybot <jimmybot@jimmybot.com>"]
 

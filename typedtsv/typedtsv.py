@@ -5,6 +5,12 @@ import json
 import re
 
 def loads(serialized_data):
+    '''Load data from a file-like object:
+    header_info, rows = loads(open('data.ttsv', 'r', newline='\\n'))
+
+    header_info is an OrderedDict containing column name and type info
+    rows is a list of lists that contain values'''
+
     line = serialized_data.readline().rstrip('\n')
 
     # throw away comment lines before the header line
@@ -23,7 +29,10 @@ def loads(serialized_data):
     return header_info, rows
 
 def load_list(serialized_data):
-    '''Convenience method for loading a single column file into a list (rather than list of lists)'''
+    '''Convenience method for loading a single column file into a list, rather than list of lists:
+    header_info, values = loads(open('one_col_data.ttsv', 'r', newline='\\n'))
+    header_info is a tuple (column_name, column_type)
+    values is a list that contains values directly'''
     line = serialized_data.readline().rstrip('\n')
 
     # throw away comment lines before the header line
@@ -70,10 +79,12 @@ def load_line(header_info, line, as_dict=False):
     return cols
 
 def dumps(header_info, data, outfile):
-    """Serialize a list of rows to a typed tsv file
+    """Serialize a list of rows to a typed tsv file-like object
 
     header_info may be either a tuple/list of column names and the types will be inferred from the data
-    or it may be a full OrderedDictionary whose keys are the column names and values are the column types
+    or it may be a full OrderedDict whose keys are the column names and values are the column types
+
+    data is a list of lists that contained the values to be serialized
     """
     if type(header_info) in (list, tuple):
         header_info = header_info_types_from_row(header_info, data[0])
@@ -87,15 +98,17 @@ def dumps(header_info, data, outfile):
         outfile.write('\n')
 
 def dump_list(header_info, data, outfile):
-    """Serialize a list representing a single column to a typed tsv file
+    """Serialize a list representing a single column to a typed tsv file-like object
 
     header_info may be either a column name and the type will be inferred from the data
-    or it may be a tuple pair whose first element is the column names and second element
-    is the column type
+    or it may be a tuple pair whose first element is the column names and second element is the column type
+    or it may be an OrderedDict
+
+    data is a list of values
     """
     if type(header_info) == str:
         header_info = header_info_types_from_row((header_info,), [data[0]])
-    else:
+    elif type(header_info) != OrderedDict:
         header_info = OrderedDict((header_info,))
 
     raw_header = dump_header(header_info)
