@@ -70,7 +70,8 @@ We'll never allow quoted `'\n'` because this would make the file difficult to ch
 **Gotchas**:
 - In Python, you need to be careful about opening files that may contain Windows newlines:
 ```py
-infile = open('data.ttsv', 'r', newline='\n')   # must set newline='\n' because default for newline is '\n' or '\r' or '\r\n'
+# must set newline='\n' because default for newline is '\n' or '\r' or '\r\n'
+infile = open('data.ttsv', 'r', newline='\n')
 ```
 - typedtsv.dumps can infer column types from the first row of your data but not if there are any ```null```'s.  In that case, use the regular OrderedDict method to define column names and types
 
